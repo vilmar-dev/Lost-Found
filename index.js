@@ -376,3 +376,38 @@ window.showDetail = window.showDetail || function () {
 
 console.log("showPage:", typeof showPage);
 console.log("renderCards:", typeof renderCards);
+
+
+
+
+
+
+// ============================
+// HARD GLOBAL FIX (FOR ALL FUNCTIONS)
+// ============================
+
+function bindToWindow(obj) {
+  Object.keys(obj).forEach(key => {
+    window[key] = obj[key];
+  });
+}
+
+bindToWindow({
+  showPage,
+  renderCards,
+  openPostModal,
+  setFormType,
+  previewImage,
+  submitPost,
+  claimItem,
+  verifyItem,
+  removeItem,
+  openModal,
+  closeModal,
+  toggleSidebar,
+  closeSidebar,
+  toggleAdminMode,
+  showDetail
+});
+
+console.log("ALL FUNCTIONS BOUND TO WINDOW");
