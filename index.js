@@ -337,3 +337,33 @@ window.toggleSidebar = toggleSidebar;
 window.closeSidebar = closeSidebar;
 window.toggleAdminMode = toggleAdminMode;
 window.showDetail = showDetail; // IMPORTANT
+
+
+
+
+
+// ============================
+// GLOBAL EXPORT FIX
+// ============================
+
+window.showPage = showPage;
+window.renderCards = renderCards;
+window.openPostModal = openPostModal;
+window.setFormType = setFormType;
+window.previewImage = previewImage;
+window.submitPost = submitPost;
+
+window.claimItem = claimItem;
+window.verifyItem = verifyItem;
+window.removeItem = removeItem;
+
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+window.toggleSidebar = toggleSidebar;
+window.closeSidebar = closeSidebar;
+
+window.toggleAdminMode = toggleAdminMode;
+window.showDetail = showDetail;
+
+console.log("GLOBAL FUNCTIONS EXPOSED");
