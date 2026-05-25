@@ -297,6 +297,38 @@
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="index.js"> </script>
+<script type="module" src="index.js">
+  
+
+// 1. Import Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, push, onValue } 
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+
+// 2. Your Firebase config (PASTE HERE)
+const firebaseConfig = {
+  databaseURL: "https://aisat-loss-and-found-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  apiKey: "AIzaSyA6JK3uyqF6xCNe82DgIuOiu3K-iGZ1lUE",
+  authDomain: "aisat-loss-and-found.firebaseapp.com",
+  projectId: "aisat-loss-and-found",
+};
+
+
+// 3. Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+console.log("Firebase connected!");
+</script>
+
+
+
+
+
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, set, push, onValue } 
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 </body>
 </html>
