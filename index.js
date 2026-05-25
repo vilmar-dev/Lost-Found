@@ -301,3 +301,16 @@ function removeItem(id) {
 // ============================
 
 renderAll();
+
+
+
+
+// ============================
+// FIX GLOBAL BUTTON ACCESS
+// ============================
+
+window.showPage = showPage;
+window.submitPost = submitPost;
+window.claimItem = claimItem;
+window.verifyItem = verifyItem;
+window.removeItem = removeItem;
