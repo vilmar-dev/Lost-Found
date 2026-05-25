@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lost & Found Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="index.css">
+
+</head>
+<body>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="logo-container">
+
+    <div class="logo-circle">
+      <img src="img/logo.png" alt="Logo"/>
+    </div>
+  </div>
+  <div class="sidebar-title">Lost &amp; Found</div>
+  <div class="sidebar-subtitle">Community Portal</div>
+
+  <div class="nav-section">
+    <div class="nav-label">Navigation</div>
+    <button class="nav-btn active" onclick="showPage('browse', this)">
+      <span class="icon">🔍</span> Browse Items
+    </button>
+    <button class="nav-btn" onclick="showPage('lost', this)">
+      <span class="icon">😟</span> Lost Items
+    </button>
+    <button class="nav-btn" onclick="showPage('found', this)">
+      <span class="icon">✅</span> Found Items
+    </button>
+    <button class="nav-btn" onclick="showPage('claimed', this)">
+      <span class="icon">🏷️</span> Claimed
+    </button>
+  </div>
+
+  <div class="nav-section" style="margin-top:8px;">
+    <div class="nav-label">Admin</div>
+    <button class="nav-btn" onclick="showPage('admin', this)" id="adminNavBtn">
+      <span class="icon">🛡️</span> Admin Panel
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    This Website is created by Concern Aisat student me here --> <a href="https://vilmar-dev.github.io/Portfolio/" target="_blank">Mr. Vilmar</a><br>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+      <span class="page-title" id="pageTitle">Browse Items</span>
+      <span class="badge-count" id="itemCount">0</span>
+    </div>
+    <div class="topbar-right">
+      <button class="admin-toggle" id="adminToggle" onclick="toggleAdminMode()">
+        <span class="admin-dot"></span>
+        <span id="adminToggleLabel">Admin Mode</span>
+      </button>
+      <button class="btn btn-primary" onclick="openPostModal()">
+        + Post Item
+      </button>
+    </div>
+  </div>
+
+  <!-- BROWSE PAGE -->
+  <div class="page-section active" id="page-browse">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-label">Total Posts</div>
+        <div class="stat-value" id="stat-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">😟</div>
+        <div class="stat-label">Lost Items</div>
+        <div class="stat-value" id="stat-lost">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-label">Found Items</div>
+        <div class="stat-value" id="stat-found">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏷️</div>
+        <div class="stat-label">Claimed</div>
+        <div class="stat-value" id="stat-claimed">0</div>
+      </div>
+    </div>
+
+    <div class="search-bar-row">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search items by name, location..." oninput="renderCards('browse')"/>
+      </div>
+      <select class="filter-select" id="filterType" onchange="renderCards('browse')">
+        <option value="all">All Types</option>
+        <option value="lost">Lost</option>
+        <option value="found">Found</option>
+      </select>
+      <select class="filter-select" id="filterDate" onchange="renderCards('browse')">
+        <option value="all">All Dates</option>
+        <option value="today">Today</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+      </select>
+    </div>
+
+    <div class="cards-grid" id="browse-grid"></div>
+    <div class="empty-state" id="browse-empty" style="display:none;">
+      <div class="empty-icon">📭</div>
+      <p>No items found. Try a different search or post a new item!</p>
+    </div>
+  </div>
+
+  <!-- LOST PAGE -->
+  <div class="page-section" id="page-lost">
+    <div class="section-header">
+      <span class="section-title">Lost Items</span>
+      <button class="btn btn-primary btn-sm" onclick="openPostModal('lost')">+ Report Lost Item</button>
+    </div>
+    <div class="search-bar-row">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchLost" placeholder="Search lost items..." oninput="renderCards('lost')"/>
+      </div>
+    </div>
+    <div class="cards-grid" id="lost-grid"></div>
+    <div class="empty-state" id="lost-empty" style="display:none;">
+      <div class="empty-icon">😟</div>
+      <p>No lost items posted yet.</p>
+    </div>
+  </div>
+
+  <!-- FOUND PAGE -->
+  <div class="page-section" id="page-found">
+    <div class="section-header">
+      <span class="section-title">Found Items</span>
+      <button class="btn btn-primary btn-sm" onclick="openPostModal('found')">+ Report Found Item</button>
+    </div>
+    <div class="search-bar-row">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchFound" placeholder="Search found items..." oninput="renderCards('found')"/>
+      </div>
+    </div>
+    <div class="cards-grid" id="found-grid"></div>
+    <div class="empty-state" id="found-empty" style="display:none;">
+      <div class="empty-icon">✅</div>
+      <p>No found items posted yet.</p>
+    </div>
+  </div>
+
+  <!-- CLAIMED PAGE -->
+  <div class="page-section" id="page-claimed">
+    <div class="section-header">
+      <span class="section-title">Claimed Items</span>
+    </div>
+    <div class="cards-grid" id="claimed-grid"></div>
+    <div class="empty-state" id="claimed-empty" style="display:none;">
+      <div class="empty-icon">🏷️</div>
+      <p>No claimed items yet.</p>
+    </div>
+  </div>
+
+  <!-- ADMIN PAGE -->
+  <div class="page-section" id="page-admin">
+    <div class="section-header">
+      <span class="section-title">🛡️ Admin Panel</span>
+      <span style="font-size:13px; color:var(--gray-400); font-weight:600;">Manage all posts and verify claims</span>
+    </div>
+    <div id="admin-lock" style="text-align:center; padding:60px; color:var(--gray-400);">
+      <div style="font-size:48px; margin-bottom:12px;">🔒</div>
+      <p style="font-size:15px; font-weight:700;">Enable Admin Mode to access this panel</p>
+      <p style="font-size:13px; margin-top:6px;">Click the "Admin Mode" button in the top right</p>
+    </div>
+    <div id="admin-content" style="display:none;">
+      <div class="stats-row" style="grid-template-columns: repeat(3,1fr); margin-bottom:20px;">
+        <div class="stat-card">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-label">Pending Review</div>
+          <div class="stat-value" id="admin-pending">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✔️</div>
+          <div class="stat-label">Verified</div>
+          <div class="stat-value" id="admin-verified">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🗑️</div>
+          <div class="stat-label">Removed</div>
+          <div class="stat-value" id="admin-removed">0</div>
+        </div>
+      </div>
+      <div class="admin-table-wrap">
+      <table class="admin-table" id="adminTable">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Contact</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody"></tbody>
+      </table>
+      </div>
+      <div class="empty-state" id="admin-empty" style="display:none;">
+        <div class="empty-icon">🗂️</div>
+        <p>No items to manage.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POST MODAL -->
+<div class="modal-overlay" id="postModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="postModalTitle">Post an Item</span>
+      <button class="modal-close" onclick="closeModal('postModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-type-toggle">
+        <button class="type-option active" id="typeBtn-lost" onclick="setFormType('lost')">😟 I Lost Something</button>
+        <button class="type-option" id="typeBtn-found" onclick="setFormType('found')">✅ I Found Something</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Item Name *</label>
+        <input type="text" class="form-control" id="f-name" placeholder="e.g. Black Wallet, iPhone 14, Blue Backpack"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Location *</label>
+          <input type="text" class="form-control" id="f-location" placeholder="e.g. Main Library, Gate 3"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date *</label>
+          <input type="date" class="form-control" id="f-date"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" id="f-desc" placeholder="Describe the item — color, brand, markings, etc."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Contact Name *</label>
+          <input type="text" class="form-control" id="f-contact-name" placeholder="Your name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contact Info *</label>
+          <input type="text" class="form-control" id="f-contact" placeholder="Phone / Email / FB"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload Photo</label>
+        <div class="image-upload-zone">
+          <input type="file" accept="image/*" id="f-image" onchange="previewImage(this)"/>
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">Click to upload or drag & drop<br/><small>PNG, JPG up to 10MB</small></div>
+        </div>
+        <img id="f-image-preview" class="image-preview" src="" alt="Preview"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('postModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitPost()">🚀 Submit Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="detailModalTitle">Item Details</span>
+      <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    </div>
+    <div class="modal-body" id="detailModalBody"></div>
+    <div class="modal-footer" id="detailModalFooter"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="index.js"> </script>
+</body>
+</html>
