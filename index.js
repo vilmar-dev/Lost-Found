@@ -367,3 +367,12 @@ window.toggleAdminMode = toggleAdminMode;
 window.showDetail = showDetail;
 
 console.log("GLOBAL FUNCTIONS EXPOSED");
+
+
+
+window.showDetail = window.showDetail || function () {
+  console.error("showDetail not defined");
+};
+
+console.log("showPage:", typeof showPage);
+console.log("renderCards:", typeof renderCards);
