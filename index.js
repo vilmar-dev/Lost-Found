@@ -14,13 +14,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
+ apiKey: "AIzaSyA6JK3uyqF6xCNe82DgIuOiu3K-iGZ1lUE",
+  authDomain: "aisat-loss-and-found.firebaseapp.com",
   databaseURL: "https://aisat-loss-and-found-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "aisat-loss-and-found",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_ID",
-  appId: "YOUR_APP_ID"
+  storageBucket: "aisat-loss-and-found.firebasestorage.app",
+    messagingSenderId: "208522574409",
+    appId: "1:208522574409:web:0d0d412335eeca3a525d98"
 };
 
 const app = initializeApp(firebaseConfig);
