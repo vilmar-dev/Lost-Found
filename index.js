@@ -2,30 +2,74 @@
 // ============================
 // STATE
 // ============================
-let items = JSON.parse(localStorage.getItem('lf_items') || '[]');
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  push,
+  onValue,
+  set
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+
+
+
+
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "https://aisat-loss-and-found-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "aisat-loss-and-found",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+console.log("Firebase Connected");
+
+
+
+let items = [];
+
+
+const itemsRef = ref(db, "items");
+
+onValue(itemsRef, (snapshot) => {
+
+  const data = snapshot.val();
+
+  if (data) {
+    items = Object.values(data);
+  } else {
+    items = [];
+  }
+
+  renderAll();
+});
+
+
+
 let adminMode = false;
 let currentPage = 'browse';
 let formType = 'lost';
 let editingId = null;
 
 // Seed demo data
-if (items.length === 0) {
-  items = [
-    { id: uid(), type: 'lost', name: 'Black Leather Wallet', location: 'Main Library, 2nd Floor', date: today(-1), desc: 'Contains ID, bank cards, and some cash. Has a small "R" engraved at the back.', contactName: 'Ramon Santos', contact: '09171234567', image: '', status: 'pending', createdAt: Date.now()-86400000 },
-    { id: uid(), type: 'found', name: 'iPhone 14 (Black)', location: 'Cafeteria near entrance', date: today(0), desc: 'Screen cracked slightly on corner. Found under table during lunch.', contactName: 'Maria Cruz', contact: 'maria.cruz@email.com', image: '', status: 'verified', createdAt: Date.now()-3600000 },
-    { id: uid(), type: 'lost', name: 'Blue JanSport Backpack', location: 'Gate 3 / Parking Area', date: today(-2), desc: 'Contains laptop, notebooks, and charger. Has keychain of a panda attached.', contactName: 'Josh Reyes', contact: 'josh.r / FB Messenger', image: '', status: 'pending', createdAt: Date.now()-172800000 },
-    { id: uid(), type: 'found', name: 'Student ID Card', location: 'Engineering Bldg Hallway', date: today(0), desc: 'Found on the floor near the engineering bulletin board.', contactName: 'Security Office', contact: 'security@campus.edu', image: '', status: 'pending', createdAt: Date.now()-1800000 },
-    { id: uid(), type: 'lost', name: 'Airpods Pro (White Case)', location: 'Science Lab Room 204', date: today(-3), desc: 'Left during afternoon session. Case has a small yellow sticker.', contactName: 'Ana Mendoza', contact: '09987654321', image: '', status: 'claimed', createdAt: Date.now()-259200000 },
-  ];
-  save();
-}
+
 
 function uid() { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
 function today(offset=0) {
   const d = new Date(); d.setDate(d.getDate() + offset);
   return d.toISOString().slice(0,10);
 }
-function save() { localStorage.setItem('lf_items', JSON.stringify(items)); }
+
 function formatDate(s) {
   if (!s) return '—';
   const d = new Date(s + 'T00:00:00');
@@ -237,7 +281,7 @@ function submitPost() {
 // ============================
 // DETAIL MODAL
 // ============================
-function showDetail(id) {
+/* function showDetail(id) {
   const item = items.find(i => i.id === id);
   if (!item) return;
 
@@ -422,4 +466,302 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 // ============================
 // INIT
 // ============================
+renderAll(); */ 
+
+
+
+
+// ============================
+// FIREBASE SETUP
+// ============================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  push,
+  onValue,
+  set
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "https://aisat-loss-and-found-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "aisat-loss-and-found",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const itemsRef = ref(db, "items");
+
+console.log("Firebase Connected");
+
+// ============================
+// STATE
+// ============================
+
+let items = [];
+
+let adminMode = false;
+let currentPage = 'browse';
+let formType = 'lost';
+let editingId = null;
+
+// ============================
+// FIREBASE READ (REALTIME)
+// ============================
+
+onValue(itemsRef, (snapshot) => {
+  const data = snapshot.val();
+
+  if (data) {
+    items = Object.entries(data).map(([id, value]) => ({
+      id,
+      ...value
+    }));
+  } else {
+    items = [];
+  }
+
+  renderAll();
+});
+
+// ============================
+// HELPERS
+// ============================
+
+function uid() {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+function today(offset = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().slice(0, 10);
+}
+
+function formatDate(s) {
+  if (!s) return '—';
+  const d = new Date(s + 'T00:00:00');
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
+// ============================
+// SYNC TO FIREBASE (IMPORTANT)
+// ============================
+
+function syncToFirebase() {
+  const obj = {};
+  items.forEach(i => {
+    obj[i.id] = { ...i };
+    delete obj[i.id].id;
+  });
+
+  set(itemsRef, obj);
+}
+
+// ============================
+// NAVIGATION
+// ============================
+
+const pageTitles = {
+  browse: 'Browse Items',
+  lost: 'Lost Items',
+  found: 'Found Items',
+  claimed: 'Claimed Items',
+  admin: 'Admin Panel'
+};
+
+function showPage(page, btn) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById('page-' + page).classList.add('active');
+  if (btn) btn.classList.add('active');
+
+  document.getElementById('pageTitle').textContent = pageTitles[page] || 'Portal';
+
+  currentPage = page;
+  renderAll();
+}
+
+// ============================
+// RENDER ALL
+// ============================
+
+function renderAll() {
+  updateStats();
+  renderCards('browse');
+  renderCards('lost');
+  renderCards('found');
+  renderCards('claimed');
+  renderAdmin();
+}
+
+// ============================
+// STATS
+// ============================
+
+function updateStats() {
+  const active = items.filter(i => i.status !== 'removed');
+
+  const lostCount = active.filter(i => i.type === 'lost' && i.status !== 'claimed').length;
+  const foundCount = active.filter(i => i.type === 'found' && i.status !== 'claimed').length;
+  const claimedCount = active.filter(i => i.status === 'claimed').length;
+
+  document.getElementById('stat-total').textContent = active.length;
+  document.getElementById('stat-lost').textContent = lostCount;
+  document.getElementById('stat-found').textContent = foundCount;
+  document.getElementById('stat-claimed').textContent = claimedCount;
+  document.getElementById('itemCount').textContent = active.length;
+}
+
+// ============================
+// RENDER CARDS
+// ============================
+
+function renderCards(page) {
+  let filtered = items.filter(i => i.status !== 'removed');
+
+  if (page === 'claimed') {
+    filtered = filtered.filter(i => i.status === 'claimed');
+  } else if (page === 'lost') {
+    filtered = filtered.filter(i => i.type === 'lost' && i.status !== 'claimed');
+    const q = document.getElementById('searchLost')?.value.toLowerCase() || '';
+    if (q) filtered = filtered.filter(i =>
+      (i.name + i.location + i.desc).toLowerCase().includes(q)
+    );
+  } else if (page === 'found') {
+    filtered = filtered.filter(i => i.type === 'found' && i.status !== 'claimed');
+    const q = document.getElementById('searchFound')?.value.toLowerCase() || '';
+    if (q) filtered = filtered.filter(i =>
+      (i.name + i.location + i.desc).toLowerCase().includes(q)
+    );
+  } else if (page === 'browse') {
+    const q = document.getElementById('searchInput')?.value.toLowerCase() || '';
+    const t = document.getElementById('filterType')?.value || 'all';
+
+    if (q) {
+      filtered = filtered.filter(i =>
+        (i.name + i.location + i.desc + i.contact).toLowerCase().includes(q)
+      );
+    }
+
+    if (t !== 'all') {
+      filtered = filtered.filter(i => i.type === t);
+    }
+  }
+
+  filtered.sort((a, b) => b.createdAt - a.createdAt);
+
+  const grid = document.getElementById(page + '-grid');
+  if (!grid) return;
+
+  grid.innerHTML = filtered.map(cardHTML).join('');
+}
+
+// ============================
+// CARD UI
+// ============================
+
+function cardHTML(item) {
+  const tagClass = item.status === 'claimed'
+    ? 'tag-claimed'
+    : (item.type === 'lost' ? 'tag-lost' : 'tag-found');
+
+  return `
+  <div class="item-card">
+    <div class="card-body">
+      <span class="card-tag ${tagClass}">${item.status}</span>
+      <div class="card-title">${escHtml(item.name)}</div>
+
+      <div class="card-meta">
+        <div>📍 ${escHtml(item.location)}</div>
+        <div>📅 ${formatDate(item.date)}</div>
+      </div>
+
+      <div class="card-contact">
+        👤 ${escHtml(item.contactName)} · ${escHtml(item.contact)}
+      </div>
+
+      <div class="card-actions">
+        <button onclick="claimItem('${item.id}')">Claim</button>
+        <button onclick="verifyItem('${item.id}')">Verify</button>
+        <button onclick="removeItem('${item.id}')">Remove</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function escHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ============================
+// SUBMIT POST (FIREBASE WRITE)
+// ============================
+
+function submitPost() {
+  const item = {
+    id: uid(),
+    type: formType,
+    name: document.getElementById('f-name').value.trim(),
+    location: document.getElementById('f-location').value.trim(),
+    date: document.getElementById('f-date').value,
+    desc: document.getElementById('f-desc').value.trim(),
+    contactName: document.getElementById('f-contact-name').value.trim(),
+    contact: document.getElementById('f-contact').value.trim(),
+    image: "",
+    status: "pending",
+    createdAt: Date.now()
+  };
+
+  push(itemsRef, item);
+}
+
+// ============================
+// ACTIONS (NOW FIREBASE SYNC)
+// ============================
+
+function claimItem(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+
+  item.status = "claimed";
+  syncToFirebase();
+}
+
+function verifyItem(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+
+  item.status = "verified";
+  syncToFirebase();
+}
+
+function removeItem(id) {
+  const item = items.find(i => i.id === id);
+  if (!item) return;
+
+  item.status = "removed";
+  syncToFirebase();
+}
+
+// ============================
+// INIT
+// ============================
+
 renderAll();
